@@ -1,3 +1,5 @@
+// @ts-nocheck
+// chrome-remote-interface types are incomplete :(
 import { Command, flags } from "@oclif/command";
 
 import * as os from "os";
@@ -7,7 +9,7 @@ import * as chokidar from "chokidar";
 import * as CDP from "chrome-remote-interface";
 import * as debounce from "debounce";
 
-const checkManifest = async (manifestPath) => {
+const checkManifest = async (manifestPath: string) => {
   let raw, parsed;
 
   try {
@@ -28,7 +30,7 @@ const checkPlatform = async () => {
   }
 };
 
-const checkPath = async (pathToCheck, errorMessage) => {
+const checkPath = async (pathToCheck: string, errorMessage: string) => {
   if (!fs.pathExists(pathToCheck)) {
     throw new Error(errorMessage);
   }
@@ -41,11 +43,13 @@ export default class Watch extends Command {
     { name: "plugin", description: "plugin source directory", required: true },
   ];
 
-  log(...args) {
+  client: CDP.Client | undefined;
+
+  log(...args: any) {
     super.log(`[${new Date().toISOString()}]`, ...args);
   }
 
-  async connect(pluginUID) {
+  async connect(pluginUID: string) {
     if (this.client) {
       return;
     }
@@ -54,20 +58,18 @@ export default class Watch extends Command {
       this.client = await CDP({
         host: "localhost",
         port: 23654,
-        target: (list) => list.find((i) => i.title === pluginUID),
+        target: (list: any) => list.find((i: any) => i.title === pluginUID),
       });
 
       this.log(`Connected to debugger at ${this.client.webSocketUrl}`);
     } catch (e) {
       this.error(e);
-      this.error(
-        `Unable to connect to debugger at ${this.client.webSocketUrl}`
-      );
+      this.error(`Unable to connect to debugger`);
     } finally {
       if (this.client) {
         this.client.on("disconnect", () => {
           this.log(`Disconnected from debugger`);
-          this.client.close();
+          this.client?.close();
           this.client = undefined;
         });
       }
@@ -79,7 +81,7 @@ export default class Watch extends Command {
 
     const sourcePluginPath = path.resolve(args.plugin);
     const elgatoPluginsPath = path.resolve(
-      process.env.APPDATA,
+      String(process.env.APPDATA),
       "Elgato/StreamDeck/Plugins/"
     );
 
@@ -96,7 +98,7 @@ export default class Watch extends Command {
 
     await this.connect(pluginUID);
 
-    const installPlugin = debounce(async (event, eventPath) => {
+    const installPlugin = debounce(async (event: string, eventPath: string) => {
       this.log("Change Detected:", eventPath);
       await this.connect(pluginUID);
 
@@ -104,7 +106,7 @@ export default class Watch extends Command {
       await fs.copy(sourcePluginPath, destinationPath);
       this.log(`Copied plugin to ${destinationPath}`);
 
-      await this.client.Page.reload();
+      await this.client?.Page.reload();
       this.log(`Reloaded ${pluginFullName}`);
     }, 200);
 
