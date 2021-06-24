@@ -8,11 +8,11 @@ Stream Deck Development Tool
 [![License](https://img.shields.io/npm/l/deckdev.svg)](https://github.com/hhaidar/deckdev/blob/master/package.json)
 
 <!-- toc -->
-
-- [deckdev](#deckdev)
 - [Usage](#usage)
 - [Commands](#commands)
 <!-- tocstop -->
+
+<img src="https://i.imgur.com/qvEincx.gif" />
 
 # Usage
 
