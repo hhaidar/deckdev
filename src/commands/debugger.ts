@@ -1,3 +1,5 @@
+// @ts-nocheck
+// rage-edit types are not available :(
 import { flags } from "@oclif/command";
 
 import Registry from "rage-edit";
