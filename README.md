@@ -8,14 +8,16 @@ Stream Deck Development Tool
 [![License](https://img.shields.io/npm/l/deckdev.svg)](https://github.com/hhaidar/deckdev/blob/master/package.json)
 
 <!-- toc -->
-* [deckdev](#deckdev)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [deckdev](#deckdev)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g deckdev
 $ deckdev COMMAND
@@ -27,27 +29,44 @@ USAGE
   $ deckdev COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`deckdev debugger [FILE]`](#deckdev-debugger-file)
-* [`deckdev help [COMMAND]`](#deckdev-help-command)
-* [`deckdev watch PLUGIN`](#deckdev-watch-plugin)
 
-## `deckdev debugger [FILE]`
+- [`deckdev watch [PLUGIN]`](#deckdev-watch-plugin)
+- [`deckdev debugger [ACTION]`](#deckdev-debugger-action)
+- [`deckdev help [COMMAND]`](#deckdev-help-command)
 
-describe the command here
+## `deckdev watch [PLUGIN]`
+
+watch for changes and reload a plugin
 
 ```
 USAGE
-  $ deckdev debugger [FILE]
+  $ deckdev watch [PLUGIN]
+  $ deckdev watch path/to/your.plugin.sdPlugin
 
-OPTIONS
-  -f, --force
-  -h, --help       show CLI help
-  -n, --name=name  name to print
+ARGUMENTS
+  PLUGIN  plugin source directory
+```
+
+_See code: [src/commands/watch.ts](https://github.com/hhaidar/deckdev/blob/v0.1.0/src/commands/watch.ts)_
+
+## `deckdev debugger [ACTION]`
+
+toggle the Stream Deck debugger on/off
+
+```
+USAGE
+  $ deckdev debugger [ACTION]
+  $ deckdev debugger enable
+  $ deckdev debugger disable
+
+ARGUMENTS
+  ACTION  enable or disable
 ```
 
 _See code: [src/commands/debugger.ts](https://github.com/hhaidar/deckdev/blob/v0.1.0/src/commands/debugger.ts)_
@@ -69,17 +88,4 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
 
-## `deckdev watch PLUGIN`
-
-describe the command here
-
-```
-USAGE
-  $ deckdev watch PLUGIN
-
-ARGUMENTS
-  PLUGIN  plugin source directory
-```
-
-_See code: [src/commands/watch.ts](https://github.com/hhaidar/deckdev/blob/v0.1.0/src/commands/watch.ts)_
 <!-- commandsstop -->
