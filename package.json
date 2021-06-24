@@ -12,6 +12,7 @@
     "@oclif/config": "^1",
     "@oclif/plugin-help": "^3.2.2",
     "@oclif/plugin-not-found": "^1.2.4",
+    "@oclif/plugin-warn-if-update-available": "^1.7.0",
     "add": "^2.0.6",
     "chokidar": "^3.5.2",
     "chrome-remote-interface": "^0.30.1",
@@ -60,7 +61,8 @@
     "bin": "deckdev",
     "plugins": [
       "@oclif/plugin-help",
-      "@oclif/plugin-not-found"
+      "@oclif/plugin-not-found",
+      "@oclif/plugin-warn-if-update-available"
     ]
   },
   "repository": "hhaidar/deckdev",
