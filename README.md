@@ -8,43 +8,41 @@ Stream Deck Development Tool
 [![License](https://img.shields.io/npm/l/deckdev.svg)](https://github.com/hhaidar/deckdev/blob/master/package.json)
 
 <!-- toc -->
-
-- [Usage](#usage)
-- [Commands](#commands)
+* [deckdev](#deckdev)
+* [Usage](#usage)
+* [Commands](#commands)
 <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
-
 ```sh-session
 $ npm install -g deckdev
 $ deckdev COMMAND
 running command...
 $ deckdev (-v|--version|version)
-deckdev/0.0.0 win32-x64 node-v15.7.0
+deckdev/0.1.0 win32-x64 node-v15.7.0
 $ deckdev --help [COMMAND]
 USAGE
   $ deckdev COMMAND
 ...
 ```
-
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
+* [`deckdev debugger [FILE]`](#deckdev-debugger-file)
+* [`deckdev help [COMMAND]`](#deckdev-help-command)
+* [`deckdev watch PLUGIN`](#deckdev-watch-plugin)
 
-- [`deckdev watch [PLUGIN]`](#deckdev-watch-plugin)
-- [`deckdev help [COMMAND]`](#deckdev-help-command)
+## `deckdev debugger [FILE]`
 
-## `deckdev watch [PLUGIN]`
-
-watch a plugin source directory for changes and refresh the Stream Deck
+describe the command here
 
 ```
 USAGE
-  $ deckdev watch [PLUGIN]
+  $ deckdev debugger [FILE]
 
 OPTIONS
   -f, --force
@@ -52,7 +50,7 @@ OPTIONS
   -n, --name=name  name to print
 ```
 
-_See code: [src/commands/watch.ts](https://github.com/hhaidar/deckdev/blob/v0.0.0/src/commands/watch.ts)_
+_See code: [src/commands/debugger.ts](https://github.com/hhaidar/deckdev/blob/v0.1.0/src/commands/debugger.ts)_
 
 ## `deckdev help [COMMAND]`
 
@@ -71,4 +69,17 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.2.2/src/commands/help.ts)_
 
+## `deckdev watch PLUGIN`
+
+describe the command here
+
+```
+USAGE
+  $ deckdev watch PLUGIN
+
+ARGUMENTS
+  PLUGIN  plugin source directory
+```
+
+_See code: [src/commands/watch.ts](https://github.com/hhaidar/deckdev/blob/v0.1.0/src/commands/watch.ts)_
 <!-- commandsstop -->

@@ -1,13 +1,15 @@
 // @ts-nocheck
 // chrome-remote-interface types are incomplete :(
-import { Command, flags } from "@oclif/command";
+import { flags } from "@oclif/command";
 
-import * as os from "os";
 import * as path from "path";
 import * as fs from "fs-extra";
 import * as chokidar from "chokidar";
 import * as CDP from "chrome-remote-interface";
 import * as debounce from "debounce";
+
+import Command from "../Command";
+import { checkPlatform, checkPath } from "../helpers";
 
 const checkManifest = async (manifestPath: string) => {
   let raw, parsed;
@@ -24,18 +26,6 @@ const checkManifest = async (manifestPath: string) => {
   }
 };
 
-const checkPlatform = async () => {
-  if (os.platform() !== "win32") {
-    throw new Error("Only Windows is supported");
-  }
-};
-
-const checkPath = async (pathToCheck: string, errorMessage: string) => {
-  if (!fs.pathExists(pathToCheck)) {
-    throw new Error(errorMessage);
-  }
-};
-
 export default class Watch extends Command {
   static description = "describe the command here";
 
@@ -44,10 +34,6 @@ export default class Watch extends Command {
   ];
 
   client: CDP.Client | undefined;
-
-  log(...args: any) {
-    super.log(`[${new Date().toISOString()}]`, ...args);
-  }
 
   async connect(pluginUID: string) {
     if (this.client) {
