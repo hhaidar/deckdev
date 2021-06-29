@@ -7,6 +7,7 @@ import * as fs from "fs-extra";
 import * as chokidar from "chokidar";
 import * as CDP from "chrome-remote-interface";
 import * as debounce from "debounce";
+import * as exec from "await-exec";
 
 import Command from "../Command";
 import { checkPlatform, checkPath } from "../helpers";
@@ -33,33 +34,43 @@ export default class Watch extends Command {
     { name: "plugin", description: "plugin source directory", required: true },
   ];
 
-  client: CDP.Client | undefined;
+  async refreshWithCDP(pluginFullName: string) {
+    const config = {
+      host: "localhost",
+      port: 23654,
+    };
 
-  async connect(pluginUID: string) {
-    if (this.client) {
-      return;
-    }
+    let list = [];
 
     try {
-      this.client = await CDP({
-        host: "localhost",
-        port: 23654,
-        target: (list: any) => list.find((i: any) => i.title === pluginUID),
-      });
-
-      this.log(`Connected to debugger at ${this.client.webSocketUrl}`);
+      list = await CDP.List(config);
     } catch (e) {
-      this.error(e);
-      this.error(`Unable to connect to debugger`);
-    } finally {
-      if (this.client) {
-        this.client.on("disconnect", () => {
-          this.log(`Disconnected from debugger`);
-          this.client?.close();
-          this.client = undefined;
-        });
-      }
+      this.warn(`Unable to get active pages list from CDP → ${e.message}`);
+      this.warn("Is the StreamDeck app running with debug enabled?");
     }
+
+    list.forEach(async (endpoint) => {
+      if (!endpoint.url.includes(pluginFullName)) {
+        return;
+      }
+
+      let client;
+
+      try {
+        client = await CDP(config);
+
+        await client.Page.reload();
+      } catch (e) {
+        this.warn(`Unable to reload plugin page via CDP → ${e.message}`);
+        this.warn("Is the StreamDeck app running with debug enabled?");
+      } finally {
+        if (client) {
+          client.close();
+        }
+      }
+    });
+
+    this.log(`Reloaded ${pluginFullName} via CDP`);
   }
 
   async run() {
@@ -82,22 +93,24 @@ export default class Watch extends Command {
 
     const destinationPath = path.resolve(elgatoPluginsPath, pluginFullName);
 
-    await this.connect(pluginUID);
-
-    const installPlugin = debounce(async (event: string, eventPath: string) => {
-      this.log("Change Detected:", eventPath);
-      await this.connect(pluginUID);
-
+    const install = async () => {
       await fs.emptyDir(destinationPath);
       await fs.copy(sourcePluginPath, destinationPath);
       this.log(`Copied plugin to ${destinationPath}`);
 
-      await this.client?.Page.reload();
-      this.log(`Reloaded ${pluginFullName}`);
+      await this.refreshWithCDP(pluginFullName);
+    };
+
+    const onChange = debounce(async (event: string, eventPath: string) => {
+      this.log("Change Detected:", eventPath);
+
+      await install();
     }, 200);
 
     chokidar
       .watch(sourcePluginPath, { ignoreInitial: true })
-      .on("all", installPlugin);
+      .on("all", onChange);
+
+    this.log(`Started watching ${pluginFullName}`);
   }
 }
