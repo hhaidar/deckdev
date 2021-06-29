@@ -2,15 +2,14 @@
 // chrome-remote-interface types are incomplete :(
 import { flags } from "@oclif/command";
 
-import * as path from "path";
-import * as fs from "fs-extra";
-import * as chokidar from "chokidar";
-import * as CDP from "chrome-remote-interface";
-import * as debounce from "debounce";
-import * as exec from "await-exec";
+import path from "path";
+import fs from "fs-extra";
+import chokidar from "chokidar";
+import CDP from "chrome-remote-interface";
+import debounce from "debounce";
 
 import Command from "../Command";
-import { checkPlatform, checkPath } from "../helpers";
+import { checkPlatform, checkPath, restartStreamDeckApp } from "../helpers";
 
 const checkManifest = async (manifestPath: string) => {
   let raw, parsed;
@@ -34,13 +33,20 @@ export default class Watch extends Command {
     { name: "plugin", description: "plugin source directory", required: true },
   ];
 
+  static flags = {
+    restart: flags.boolean({
+      char: "r",
+      description: "force the StreamDeck app to restart",
+    }),
+  };
+
   async refreshWithCDP(pluginFullName: string) {
     const config = {
       host: "localhost",
       port: 23654,
     };
 
-    let list = [];
+    let list: any[] = [];
 
     try {
       list = await CDP.List(config);
@@ -69,8 +75,6 @@ export default class Watch extends Command {
         }
       }
     });
-
-    this.log(`Reloaded ${pluginFullName} via CDP`);
   }
 
   async run() {
@@ -94,11 +98,20 @@ export default class Watch extends Command {
     const destinationPath = path.resolve(elgatoPluginsPath, pluginFullName);
 
     const install = async () => {
+      const restartNeeded =
+        flags.restart || !(await fs.pathExists(destinationPath));
+
       await fs.emptyDir(destinationPath);
       await fs.copy(sourcePluginPath, destinationPath);
       this.log(`Copied plugin to ${destinationPath}`);
 
-      await this.refreshWithCDP(pluginFullName);
+      if (restartNeeded) {
+        await restartStreamDeckApp();
+        this.log("Restarted the StreamDeck app");
+      } else {
+        await this.refreshWithCDP(pluginFullName);
+        this.log(`Reloaded ${pluginFullName} via CDP`);
+      }
     };
 
     const onChange = debounce(async (event: string, eventPath: string) => {
@@ -112,5 +125,9 @@ export default class Watch extends Command {
       .on("all", onChange);
 
     this.log(`Started watching ${pluginFullName}`);
+
+    if (flags.restart) {
+      this.warn("Restart mode enabled");
+    }
   }
 }
