@@ -92,7 +92,7 @@ export default class Watch extends Command {
     await checkPath(elgatoPluginsPath, "Elgato plugins path not found");
 
     const [pluginFullName, pluginUID] = sourcePluginPath.match(
-      /((?:[\w-]+\.){1,3}?[\w-]+)\.sdPlugin/i
+      /([\w\.-]+)\.sdPlugin/i
     );
 
     const destinationPath = path.resolve(elgatoPluginsPath, pluginFullName);
