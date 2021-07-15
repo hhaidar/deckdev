@@ -1,7 +1,7 @@
 {
   "name": "deckdev",
   "description": "Stream Deck Development Tool",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Houssam Haidar @hhaidar",
   "bin": {
     "deckdev": "./bin/run"

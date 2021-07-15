@@ -23,7 +23,7 @@ $ npm install -g deckdev
 $ deckdev COMMAND
 running command...
 $ deckdev (-v|--version|version)
-deckdev/0.1.0 win32-x64 node-v15.7.0
+deckdev/0.2.2 win32-x64 node-v15.7.0
 $ deckdev --help [COMMAND]
 USAGE
   $ deckdev COMMAND
