@@ -26,7 +26,7 @@ const checkManifest = async (manifestPath: string) => {
 };
 
 export default class Watch extends Command {
-  static description = "describe the command here";
+  static description = "Watch a plugin directory for changes.";
 
   static args = {
     plugin: Args.string({

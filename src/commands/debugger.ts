@@ -18,12 +18,11 @@ const checkRegistry = async () => {
 };
 
 export default class Debugger extends Command {
-  static description = "describe the command here";
+  static description = "Toggle the remote debugger";
 
   static args = {
     action: Args.string({
       name: "action",
-      description: "toggle the remote debugger",
       required: true,
       options: ["enable", "disable"],
     }),

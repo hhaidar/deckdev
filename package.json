@@ -1,7 +1,7 @@
 {
   "name": "deckdev",
   "description": "Stream Deck Development Tool",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Houssam Haidar @hhaidar",
   "bin": {
     "deckdev": "./bin/run"
@@ -19,7 +19,6 @@
   "dependencies": {
     "@oclif/core": "^2",
     "@oclif/plugin-help": "^5",
-    "@oclif/plugin-plugins": "^2.4.3",
     "@types/debounce": "^1.2.1",
     "awesome-debounce-promise": "^2.1.0",
     "chokidar": "^3.5.3",
@@ -56,15 +55,9 @@
     "dirname": "deckdev",
     "commands": "./dist/commands",
     "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-help"
     ],
-    "topicSeparator": " ",
-    "topics": {
-      "hello": {
-        "description": "Say hello to the world and others"
-      }
-    }
+    "topicSeparator": " "
   },
   "scripts": {
     "dev": "./bin/dev",
