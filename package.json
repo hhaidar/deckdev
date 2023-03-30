@@ -36,7 +36,7 @@
     "@types/chrome-remote-interface": "^0.31.9",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.18.20",
+    "@types/node": "^16.18.23",
     "chai": "^4",
     "eslint": "^7.32.0",
     "eslint-config-oclif": "^4",
