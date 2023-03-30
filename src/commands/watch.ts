@@ -45,7 +45,7 @@ export default class Watch extends Command {
 
   async refreshWithCDP(pluginFullName: string): Promise<void> {
     const config = {
-      host: "localhost",
+      host: "127.0.0.1",
       port: 23654,
     };
 
@@ -66,9 +66,9 @@ export default class Watch extends Command {
       let client;
 
       try {
-        client = await CDP(config);
+        client = await CDP({ target: endpoint });
 
-        await client.Page.reload();
+        await client.Page.reload({ ignoreCache: true });
       } catch (error) {
         this.warn(`Unable to reload plugin page via CDP → ${error}`);
         this.warn("Is the StreamDeck app running with debug enabled?");
