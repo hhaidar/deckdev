@@ -1,6 +1,10 @@
 {
-  "extends": [
-    "oclif",
-    "oclif-typescript"
-  ]
+  "extends": ["oclif", "oclif-typescript", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": ["error"],
+    "unicorn/numeric-separators-style": ["off"],
+    "unicorn/no-array-for-each": ["off"],
+    "new-cap": ["off"]
+  }
 }

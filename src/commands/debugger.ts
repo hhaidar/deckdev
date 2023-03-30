@@ -1,19 +1,16 @@
-// @ts-nocheck
-// rage-edit types are not available :(
-import { flags } from "@oclif/command";
-
+import { Args } from "@oclif/core";
 import Registry from "rage-edit";
 
-import Command from "../Command";
-import { checkPlatform, checkPath } from "../helpers";
+import Command from "../command";
+import { checkPlatform } from "../helpers";
 
 const checkRegistry = async () => {
-  const result = await Registry.get(
+  const hasRegistryKey = await Registry.has(
     "HKCU\\Software\\Elgato Systems GmbH\\StreamDeck",
     "hasbeenlaunchedbefore"
   );
 
-  if (!result) {
+  if (!hasRegistryKey) {
     throw new Error(
       "Unable to find Stream Deck in the registry, are you sure it's installed?"
     );
@@ -23,17 +20,17 @@ const checkRegistry = async () => {
 export default class Debugger extends Command {
   static description = "describe the command here";
 
-  static args = [
-    {
+  static args = {
+    action: Args.string({
       name: "action",
       description: "toggle the remote debugger",
       required: true,
       options: ["enable", "disable"],
-    },
-  ];
+    }),
+  };
 
-  async run() {
-    const { args } = this.parse(Debugger);
+  async run(): Promise<void> {
+    const { args } = await this.parse(Debugger);
 
     await checkPlatform();
     await checkRegistry();

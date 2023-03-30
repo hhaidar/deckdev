@@ -1,24 +1,23 @@
-// @ts-nocheck
-// chrome-remote-interface types are incomplete :(
-import { flags } from "@oclif/command";
+import { Args, Flags } from "@oclif/core";
 
-import path from "path";
+import path from "node:path";
 import fs from "fs-extra";
 import chokidar from "chokidar";
 import CDP from "chrome-remote-interface";
 import debounce from "debounce";
 
-import Command from "../Command";
+import Command from "../command";
 import { checkPlatform, checkPath, restartStreamDeckApp } from "../helpers";
 
 const checkManifest = async (manifestPath: string) => {
-  let raw, parsed;
+  let raw;
+  let parsed;
 
   try {
     raw = await fs.readFile(manifestPath, "utf8");
     parsed = JSON.parse(raw);
-  } catch (e) {
-    throw new Error("There was a problem loading the manifest file");
+  } catch (error) {
+    throw new Error(`There was a problem loading the manifest file: ${error}`);
   }
 
   if (!parsed.SDKVersion) {
@@ -29,18 +28,22 @@ const checkManifest = async (manifestPath: string) => {
 export default class Watch extends Command {
   static description = "describe the command here";
 
-  static args = [
-    { name: "plugin", description: "plugin source directory", required: true },
-  ];
+  static args = {
+    plugin: Args.string({
+      name: "plugin",
+      description: "plugin source directory",
+      required: true,
+    }),
+  };
 
   static flags = {
-    restart: flags.boolean({
+    restart: Flags.boolean({
       char: "r",
       description: "force the StreamDeck app to restart",
     }),
   };
 
-  async refreshWithCDP(pluginFullName: string) {
+  async refreshWithCDP(pluginFullName: string): Promise<void> {
     const config = {
       host: "localhost",
       port: 23654,
@@ -50,8 +53,8 @@ export default class Watch extends Command {
 
     try {
       list = await CDP.List(config);
-    } catch (e) {
-      this.warn(`Unable to get active pages list from CDP → ${e.message}`);
+    } catch (error) {
+      this.warn(`Unable to get active pages list from CDP → ${error}`);
       this.warn("Is the StreamDeck app running with debug enabled?");
     }
 
@@ -66,8 +69,8 @@ export default class Watch extends Command {
         client = await CDP(config);
 
         await client.Page.reload();
-      } catch (e) {
-        this.warn(`Unable to reload plugin page via CDP → ${e.message}`);
+      } catch (error) {
+        this.warn(`Unable to reload plugin page via CDP → ${error}`);
         this.warn("Is the StreamDeck app running with debug enabled?");
       } finally {
         if (client) {
@@ -77,8 +80,8 @@ export default class Watch extends Command {
     });
   }
 
-  async run() {
-    const { args, flags } = this.parse(Watch);
+  async run(): Promise<void> {
+    const { args, flags } = await this.parse(Watch);
 
     const sourcePluginPath = path.resolve(args.plugin);
     const elgatoPluginsPath = path.resolve(
@@ -91,9 +94,9 @@ export default class Watch extends Command {
     await checkPath(sourcePluginPath, "Source plugin path not found");
     await checkPath(elgatoPluginsPath, "Elgato plugins path not found");
 
-    const [pluginFullName, pluginUID] = sourcePluginPath.match(
-      /([\w\.-]+)\.sdPlugin/i
-    );
+    const matches = sourcePluginPath.match(/([\w.-]+)\.sdplugin/i);
+
+    const pluginFullName = matches ? matches[0] : "";
 
     const destinationPath = path.resolve(elgatoPluginsPath, pluginFullName);
 
