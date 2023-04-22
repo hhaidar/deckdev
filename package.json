@@ -30,7 +30,7 @@
     "rage-edit": "^1.2.0"
   },
   "devDependencies": {
-    "@oclif/test": "^2.3.11",
+    "@oclif/test": "^2.3.16",
     "@types/chai": "^4",
     "@types/chrome-remote-interface": "^0.31.9",
     "@types/fs-extra": "^11.0.1",
